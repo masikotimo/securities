@@ -110,13 +110,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin
               </div>
             )}
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-sm text-blue-600">
                 <strong>Demo Credentials:</strong><br />
                 Username: admin<br />
                 Password: admin123
               </p>
-            </div>
+            </div> */}
           </div>
 
           <div className="flex space-x-4 mt-6">

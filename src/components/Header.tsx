@@ -1,5 +1,6 @@
 import React from 'react';
-import { TrendingUp, Shield, Users, LogOut } from 'lucide-react';
+import { TrendingUp, Users, LogOut, Home } from 'lucide-react';
+import BikLogo from '../assets/bik-capital-logo.png';
 
 interface HeaderProps {
   onShowLogin: () => void;
@@ -15,7 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ onShowLogin, onLogout, isAdminMo
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex items-center space-x-2">
-              <Shield className="w-8 h-8 text-blue-600" />
+              <img src={BikLogo} alt="Bik Capital Logo" className="w-28 h-26 object-contain" />
               <h1 className="text-xl font-bold text-gray-900">Uganda Securities</h1>
             </div>
           </div>
@@ -32,6 +33,16 @@ export const Header: React.FC<HeaderProps> = ({ onShowLogin, onLogout, isAdminMo
           </nav>
 
           <div className="flex items-center space-x-2">
+            <a
+              href="https://bik-capital.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg text-sm font-medium transition-colors"
+              title="Back to Bik Capital"
+            >
+              <Home className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Main Site</span>
+            </a>
             {isLoggedIn && isAdminMode && (
               <span className="text-sm text-green-600 font-medium">Admin Mode</span>
             )}
