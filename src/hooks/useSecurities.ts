@@ -43,6 +43,7 @@ export const useSecurities = () => {
 
   const addSecurity = async (security: Omit<Security, 'id'>) => {
     try {
+      console.log('Adding security:', security);
       const { data, error } = await supabase
         .from('securities')
         .insert({
@@ -62,7 +63,10 @@ export const useSecurities = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       const newSecurity: Security = {
         id: data.id,
@@ -83,6 +87,7 @@ export const useSecurities = () => {
       setSecurities(prev => [newSecurity, ...prev]);
       return newSecurity;
     } catch (err) {
+      console.error('Error adding security:', err);
       throw new Error(err instanceof Error ? err.message : 'Failed to add security');
     }
   };

@@ -40,6 +40,7 @@ export const useInvestorLeads = () => {
 
   const addLead = async (lead: Omit<InvestorLead, 'id' | 'createdAt' | 'status'>) => {
     try {
+      console.log('Adding lead:', lead);
       const { data, error } = await supabase
         .from('investor_leads')
         .insert({
@@ -55,7 +56,10 @@ export const useInvestorLeads = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
       const newLead: InvestorLead = {
         id: data.id,
@@ -73,6 +77,7 @@ export const useInvestorLeads = () => {
       setLeads(prev => [newLead, ...prev]);
       return newLead;
     } catch (err) {
+      console.error('Error adding lead:', err);
       throw new Error(err instanceof Error ? err.message : 'Failed to add lead');
     }
   };

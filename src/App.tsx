@@ -64,17 +64,23 @@ function App() {
 
   // Add a global event listener for form submissions from InterestModal
   React.useEffect(() => {
-    const handleInterestSubmit = (event: CustomEvent) => {
+    const handleInterestSubmit = async (event: CustomEvent) => {
       const { securityId, fullName, email, phone, investmentAmount, selectedTenor, projectedReturns } = event.detail;
-      addLead({
-        securityId,
-        fullName,
-        email,
-        phone,
-        investmentAmount,
-        selectedTenor,
-        projectedReturns
-      });
+      try {
+        await addLead({
+          securityId,
+          fullName,
+          email,
+          phone,
+          investmentAmount,
+          selectedTenor,
+          projectedReturns
+        });
+        console.log('Lead added successfully');
+      } catch (error) {
+        console.error('Error adding lead:', error);
+        // The error will be handled by the InterestModal
+      }
     };
 
     window.addEventListener('interestSubmit', handleInterestSubmit as EventListener);

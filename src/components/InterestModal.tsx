@@ -29,32 +29,63 @@ export const InterestModal: React.FC<InterestModalProps> = ({
     investmentAmount: investmentAmount,
     selectedTenor: selectedTenor
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
-    // Dispatch custom event for global handling
-    const event = new CustomEvent('interestSubmit', {
-      detail: {
-        securityId: security.id,
-        fullName: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        investmentAmount: formData.investmentAmount,
-        selectedTenor: formData.selectedTenor,
-        projectedReturns
-      }
-    });
-    window.dispatchEvent(event);
-    
-    setFormData({
-      fullName: '',
-      email: '',
-      phone: '',
-      investmentAmount: security.minimumInvestment,
-      selectedTenor: security.duration
-    });
-    onClose();
+    try {
+      // Dispatch custom event for global handling
+      const event = new CustomEvent('interestSubmit', {
+        detail: {
+          securityId: security.id,
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          investmentAmount: formData.investmentAmount,
+          selectedTenor: formData.selectedTenor,
+          projectedReturns
+        }
+      });
+      window.dispatchEvent(event);
+      
+      // Show success message
+      setShowSuccess(true);
+      
+      // Wait a bit to show success, then close
+      setTimeout(() => {
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          investmentAmount: security.minimumInvestment,
+          selectedTenor: security.duration
+        });
+        setShowSuccess(false);
+        onClose();
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting interest:', error);
+      alert('There was an error submitting your interest. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting && !showSuccess) {
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        investmentAmount: security.minimumInvestment,
+        selectedTenor: security.duration
+      });
+      setShowSuccess(false);
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
@@ -65,13 +96,35 @@ export const InterestModal: React.FC<InterestModalProps> = ({
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">Express Interest</h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
+            disabled={isSubmitting || showSuccess}
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
+        {showSuccess ? (
+          <div className="p-6 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Interest Submitted Successfully!</h3>
+            <p className="text-gray-600 mb-4">
+              Thank you for your interest in {security.name}. A broker or primary dealer will contact you within 24 hours.
+            </p>
+            <div className="bg-blue-50 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Next Steps:</strong><br />
+                • You'll receive a confirmation email shortly<br />
+                • Our team will prepare your investment documentation<br />
+                • We'll contact you to finalize the investment process
+              </p>
+            </div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="p-6">
           <div className="bg-blue-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-blue-900 mb-2">{security.name}</h3>
@@ -97,6 +150,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 required
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter your full name"
               />
@@ -112,6 +166,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter your email address"
               />
@@ -127,6 +182,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 required
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="+256 XXX XXX XXX"
               />
@@ -143,6 +199,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
                 onChange={(e) => setFormData({ ...formData, investmentAmount: parseInt(e.target.value) || security.minimumInvestment })}
                 min={security.minimumInvestment}
                 step="1000"
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
               <p className="text-xs text-gray-500 mt-1">
@@ -161,19 +218,22 @@ export const InterestModal: React.FC<InterestModalProps> = ({
           <div className="flex space-x-4 mt-6">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
+              disabled={isSubmitting}
               className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Submit Interest
+              {isSubmitting ? 'Submitting...' : 'Submit Interest'}
             </button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );

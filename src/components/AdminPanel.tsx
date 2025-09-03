@@ -22,6 +22,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState<Partial<Security>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleEdit = (security: Security) => {
     setEditingId(security.id);
@@ -30,9 +31,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const handleSave = async () => {
     setIsSubmitting(true);
+    setSuccessMessage('');
     try {
       if (editingId) {
         await onUpdateSecurity(editingId, formData);
+        setSuccessMessage('Security updated successfully!');
       } else {
         const newSecurityData = {
         type: formData.type as 'government_bond' | 'treasury_bill',
@@ -49,13 +52,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         riskRating: formData.riskRating as 'low' | 'medium' | 'high' || 'low'
         };
         await onAddSecurity(newSecurityData);
+        setSuccessMessage('Security added successfully!');
       }
+      
+      // Clear form and close after showing success
+      setTimeout(() => {
+        setEditingId(null);
+        setShowAddForm(false);
+        setFormData({});
+        setSuccessMessage('');
+      }, 2000);
     } catch (error) {
+      console.error('Error saving security:', error);
       alert('Error saving security: ' + (error instanceof Error ? error.message : 'Unknown error'));
     }
-    setEditingId(null);
-    setShowAddForm(false);
-    setFormData({});
     setIsSubmitting(false);
   };
 
@@ -63,6 +73,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     if (confirm('Are you sure you want to delete this security?')) {
       try {
         await onDeleteSecurity(id);
+        setSuccessMessage('Security deleted successfully!');
+        setTimeout(() => setSuccessMessage(''), 3000);
       } catch (error) {
         alert('Error deleting security: ' + (error instanceof Error ? error.message : 'Unknown error'));
       }
@@ -73,6 +85,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
     setEditingId(null);
     setShowAddForm(false);
     setFormData({});
+    setSuccessMessage('');
   };
 
   const simulateApiUpdate = () => {
@@ -93,6 +106,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </button>
           <button
             onClick={() => setShowAddForm(true)}
+            disabled={showAddForm || editingId}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -100,6 +114,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </button>
         </div>
       </div>
+
+      {successMessage && (
+        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <p className="text-green-800 font-medium">{successMessage}</p>
+          </div>
+        </div>
+      )}
 
       {(showAddForm || editingId) && (
         <div className="mb-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -113,6 +138,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="text"
                 value={formData.name || ''}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -121,6 +147,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <select
                 value={formData.type || ''}
                 onChange={(e) => setFormData({ ...formData, type: e.target.value as 'government_bond' | 'treasury_bill' })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               >
                 <option value="">Select Type</option>
@@ -134,6 +161,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="text"
                 value={formData.issuer || ''}
                 onChange={(e) => setFormData({ ...formData, issuer: e.target.value })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -144,6 +172,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 step="0.1"
                 value={formData.interestRate || ''}
                 onChange={(e) => setFormData({ ...formData, interestRate: parseFloat(e.target.value) })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -153,6 +182,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="number"
                 value={formData.minimumInvestment || ''}
                 onChange={(e) => setFormData({ ...formData, minimumInvestment: parseInt(e.target.value) })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -162,6 +192,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="number"
                 value={formData.duration || ''}
                 onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -172,6 +203,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 step="0.1"
                 value={formData.yield || ''}
                 onChange={(e) => setFormData({ ...formData, yield: parseFloat(e.target.value) })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -181,6 +213,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 type="date"
                 value={formData.maturityDate || ''}
                 onChange={(e) => setFormData({ ...formData, maturityDate: e.target.value })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               />
             </div>
@@ -189,6 +222,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               <select
                 value={formData.status || ''}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'closed' | 'upcoming' })}
+                disabled={isSubmitting}
                 className="w-full border border-gray-300 rounded px-3 py-2"
               >
                 <option value="active">Active</option>
@@ -202,6 +236,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <textarea
               value={formData.description || ''}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 rounded px-3 py-2"
               rows={2}
             />
