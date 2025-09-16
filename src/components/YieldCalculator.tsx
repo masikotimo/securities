@@ -96,7 +96,7 @@ export const YieldCalculator: React.FC<YieldCalculatorProps> = ({ security, onEx
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-gray-500 mb-1">Effective Yield (p.a.)</div>
+                <div className="text-sm text-gray-500 mb-1">Coupon Rate (p.a.)</div>
                 <div className="font-bold text-lg text-blue-600">
                   {formatPercentage(calculation.effectiveYield)}
                 </div>

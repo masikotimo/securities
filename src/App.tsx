@@ -133,7 +133,7 @@ function App() {
               </h1>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Secure your financial future with government-backed treasury bills and bonds. 
-                Calculate returns, compare options, and express interest with leading brokers and primary dealers.
+                Calculate returns, compare options, and express interest with leading brokers and dealers.
               </p>
             </div>
 

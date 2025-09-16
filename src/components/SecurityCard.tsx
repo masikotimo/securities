@@ -77,7 +77,7 @@ export const SecurityCard: React.FC<SecurityCardProps> = ({ security, onExpressI
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4 text-gray-400" />
               <div>
-                <div className="text-sm text-gray-500">Duration</div>
+                <div className="text-sm text-gray-500">Investment Period</div>
                 <div className="font-medium text-gray-900">{security.duration} months</div>
               </div>
             </div>

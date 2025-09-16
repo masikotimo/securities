@@ -113,7 +113,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Interest Submitted Successfully!</h3>
             <p className="text-gray-600 mb-4">
-              Thank you for your interest in {security.name}. A broker or primary dealer will contact you within 24 hours.
+              Thank you for your interest in {security.name}. A BIK Representative will contact you within 24 hours.
             </p>
             <div className="bg-blue-50 rounded-lg p-4">
               <p className="text-sm text-blue-800">
@@ -211,7 +211,7 @@ export const InterestModal: React.FC<InterestModalProps> = ({
           <div className="bg-gray-50 rounded-lg p-4 mt-6">
             <p className="text-sm text-gray-600">
               By submitting this form, you're expressing interest in this security. 
-              A broker or primary dealer will contact you within 24 hours to discuss your investment options.
+              A BIK Representative will contact you within 24 hours to discuss your investment options.
             </p>
           </div>
 
