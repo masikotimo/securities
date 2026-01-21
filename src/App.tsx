@@ -19,7 +19,7 @@ function App() {
   const [filters, setFilters] = useState<FilterOptions>({
     type: '',
     minDuration: 0,
-    maxDuration: 240,
+    maxDuration: 300,
     minInterestRate: 0,
     maxInterestRate: 25,
     issuer: '',

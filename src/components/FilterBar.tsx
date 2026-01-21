@@ -31,7 +31,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           onClick={() => onFiltersChange({
             type: '',
             minDuration: 0,
-            maxDuration: 240,
+            maxDuration: 300,
             minInterestRate: 0,
             maxInterestRate: 25,
             issuer: '',
@@ -100,7 +100,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <input
             type="number"
             value={filters.maxDuration}
-            onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 240)}
+            onChange={(e) => updateFilter('maxDuration', parseInt(e.target.value) || 300)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
